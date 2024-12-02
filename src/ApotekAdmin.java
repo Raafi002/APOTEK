@@ -413,6 +413,55 @@ public class ApotekAdmin extends javax.swing.JFrame {
 
     private void cariButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cariButtonActionPerformed
         // TODO add your handling code here:
+        // Mendapatkan input dari combo box dan text field
+    String kategori = (String) cariObat.getSelectedItem(); // "Kode Obat", "Nama Obat", atau "Jenis Obat"
+    String keyword = cari.getText();
+
+    // Clear tabel sebelum menampilkan hasil pencarian
+    int row = model.getRowCount();
+    for (int a = 0; a < row; a++) {
+        model.removeRow(0);
+    }
+
+    try (Connection cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/apotek", "root", "")) {
+        // Query dasar untuk SELECT
+        String query = "SELECT * FROM obat WHERE ";
+        
+        // Tentukan kolom berdasarkan kategori pencarian
+        switch (kategori) {
+            case "Kode Obat":
+                query += "kode_obat LIKE ?";
+                break;
+            case "Nama Obat":
+                query += "nama_obat LIKE ?";
+                break;
+            case "Jenis Obat":
+                query += "jenis_obat LIKE ?";
+                break;
+            default:
+                throw new IllegalArgumentException("Kategori pencarian tidak valid!");
+        }
+
+        // Siapkan statement
+        java.sql.PreparedStatement ps = cn.prepareStatement(query);
+        ps.setString(1, "%" + keyword + "%"); // Menggunakan LIKE dengan wildcard
+
+        ResultSet rs = ps.executeQuery();
+        
+        // Tambahkan hasil pencarian ke tabel
+        while (rs.next()) {
+            String data[] = {
+                rs.getString("kode_obat"),
+                rs.getString("nama_obat"),
+                rs.getString("jenis_obat"),
+                rs.getString("stok_obat"),
+                rs.getString("harga_obat")
+            };
+            model.addRow(data);
+        }
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Gagal memuat data pencarian: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_cariButtonActionPerformed
 
     private void cariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cariActionPerformed
