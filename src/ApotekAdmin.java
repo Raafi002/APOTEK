@@ -88,6 +88,7 @@ public class ApotekAdmin extends javax.swing.JFrame {
         cari = new javax.swing.JTextField();
         cariObat = new javax.swing.JComboBox<>();
         jenisObat = new javax.swing.JTextField();
+        logOut = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -208,12 +209,24 @@ public class ApotekAdmin extends javax.swing.JFrame {
             }
         });
 
+        logOut.setBackground(new java.awt.Color(0, 102, 102));
+        logOut.setFont(new java.awt.Font("Montserrat Black", 0, 18)); // NOI18N
+        logOut.setForeground(new java.awt.Color(242, 242, 242));
+        logOut.setText("Logout");
+        logOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logOutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(logOut)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(93, 93, 93))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -242,7 +255,7 @@ public class ApotekAdmin extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cariObat, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addComponent(tambah)
                         .addGap(18, 18, 18)
@@ -258,8 +271,13 @@ public class ApotekAdmin extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(logOut)))
                 .addGap(43, 43, 43)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -472,6 +490,17 @@ public class ApotekAdmin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jenisObatActionPerformed
 
+    private void logOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logOutActionPerformed
+        // TODO add your handling code here:
+        Login loginFrame = new Login();
+        loginFrame.setVisible(true);
+        loginFrame.pack(); // Sesuaikan ukuran frame
+        loginFrame.setLocationRelativeTo(null); // Tempatkan di tengah layar
+    
+    // Tutup jendela saat ini
+    this.dispose();
+    }//GEN-LAST:event_logOutActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -524,6 +553,7 @@ public class ApotekAdmin extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jenisObat;
     private javax.swing.JTextField kodeObat;
+    private javax.swing.JButton logOut;
     private javax.swing.JTextField namaObat;
     private javax.swing.JTextField stokObat;
     private javax.swing.JTable tabel;
