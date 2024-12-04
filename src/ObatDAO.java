@@ -1,17 +1,16 @@
+
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObatDAO {
-    private Connection connection;
+public class ObatDAO extends DBConnection {
 
-    // Constructor untuk inisialisasi koneksi database
+    // Constructor yang memanggil constructor dari DBConnection untuk mendapatkan koneksi
     public ObatDAO() throws SQLException {
-        connection = DBConnection.getConnection();
+        super(); // Memanggil constructor parent class DBConnection
     }
 
     // Create Obat (Insert)
