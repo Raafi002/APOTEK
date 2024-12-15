@@ -1,3 +1,5 @@
+
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -28,7 +30,7 @@ public class ApotekAdmin extends javax.swing.JFrame {
         
 
         
-        
+
         initComponents();
         String [] judul ={"Kode Obat","Nama Obat","Jenis Obat","Stok Obat","Harga Obat"};
         model =new DefaultTableModel(judul, 0);
@@ -184,15 +186,20 @@ public class ApotekAdmin extends javax.swing.JFrame {
 
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Kode Obat", "Nama Obat", "Jenis Obat", "Stok Obat", "Harga Obat"
             }
         ));
+        tabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabel);
 
         cari.addActionListener(new java.awt.event.ActionListener() {
@@ -367,6 +374,14 @@ public class ApotekAdmin extends javax.swing.JFrame {
         ps.executeUpdate();
         JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!");
         tampilkan(); // Refresh tabel
+
+        // Membersihkan textfield setelah tambah
+        kodeObat.setText("");
+        namaObat.setText("");
+        jenisObat.setText("");
+        stokObat.setText("");
+        hargaObat.setText("");
+
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(this, "Gagal menambah data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     } catch (NumberFormatException ex) {
@@ -422,11 +437,20 @@ public class ApotekAdmin extends javax.swing.JFrame {
         ps.executeUpdate();
         JOptionPane.showMessageDialog(this, "Data berhasil diperbarui!");
         tampilkan(); // Refresh tabel
+
+        // Membersihkan textfield setelah edit
+        kodeObat.setText("");
+        namaObat.setText("");
+        jenisObat.setText("");
+        stokObat.setText("");
+        hargaObat.setText("");
+
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(this, "Gagal mengedit data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     } catch (NumberFormatException ex) {
         JOptionPane.showMessageDialog(this, "Format stok/harga salah!", "Error", JOptionPane.ERROR_MESSAGE);
     }
+
     }//GEN-LAST:event_editActionPerformed
 
     private void cariButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cariButtonActionPerformed
@@ -501,6 +525,25 @@ public class ApotekAdmin extends javax.swing.JFrame {
     this.dispose();
     }//GEN-LAST:event_logOutActionPerformed
 
+    private void tabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelMouseClicked
+        // TODO add your handling code here:
+        int selectedRow = tabel.getSelectedRow();
+        if (selectedRow != -1) {
+            String kode = (String) model.getValueAt(selectedRow, 0);
+            String nama = (String) model.getValueAt(selectedRow, 1);
+            String jenis = (String) model.getValueAt(selectedRow, 2);
+            String stok = (String) model.getValueAt(selectedRow, 3);
+            String harga = (String) model.getValueAt(selectedRow, 4);
+
+            // Mengisi textfield
+            kodeObat.setText(kode);
+            namaObat.setText(nama);
+            jenisObat.setText(jenis);
+            stokObat.setText(stok);
+            hargaObat.setText(harga);
+        }
+    }//GEN-LAST:event_tabelMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -526,6 +569,7 @@ public class ApotekAdmin extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ApotekAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
