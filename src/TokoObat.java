@@ -21,9 +21,9 @@ public class TokoObat extends javax.swing.JFrame {
     // Koneksi ke database
     private void connectToDatabase() {
         try {
-            String url = "jdbc:mysql://localhost:3306/apotek"; // URL Database
-            String user = "root"; // Username MySQL
-            String password = ""; // Password MySQL
+            String url = "jdbc:mysql://localhost:3306/apotek";
+            String user = "root"; 
+            String password = "";
             conn = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Koneksi Gagal: " + e.getMessage());

@@ -145,7 +145,7 @@ public class Login extends javax.swing.JFrame {
         if (conn != null) {
             try {
                 // Query untuk mencari username dan password di database
-                String query = "SELECT * FROM user WHERE username = ? AND password = ?";
+                String query = "SELECT * FROM karyawan WHERE username = ? AND password = ?";
                 PreparedStatement stmt = conn.prepareStatement(query);
                 stmt.setString(1, username);
                 stmt.setString(2, password);

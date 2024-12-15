@@ -11,10 +11,10 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                // Membuat instance dari frame Login
-                Login loginFrame = new Login();
-                loginFrame.setVisible(true);  // Menampilkan frame
-                loginFrame.setLocationRelativeTo(null); // Menempatkan frame di tengah layar
+                // Membuat instance dari frame TampilanAwal
+                TampilanAwal tampilanAwalFrame = new TampilanAwal();
+                tampilanAwalFrame.setVisible(true);  // Menampilkan frame
+                tampilanAwalFrame.setLocationRelativeTo(null); // Menempatkan frame di tengah layar
             }
         });
     }

@@ -3,9 +3,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnector {
-    private static final String URL = "jdbc:mysql://localhost:3306/apotek"; // Ganti sesuai dengan URL database
-    private static final String USER = "root"; // Ganti dengan username MySQL Anda
-    private static final String PASSWORD = ""; // Ganti dengan password MySQL Anda
+    private static final String URL = "jdbc:mysql://localhost:3306/apotek"; 
+    private static final String USER = "root"; 
+    private static final String PASSWORD = ""; 
     
     public static Connection getConnection() {
         try {
