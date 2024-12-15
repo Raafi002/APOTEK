@@ -1,6 +1,7 @@
 
 
 import javax.swing.*;
+import java.sql.*;
 
 public class Login extends javax.swing.JFrame {
 
@@ -123,26 +124,48 @@ public class Login extends javax.swing.JFrame {
         String inputUsername = username.getText();
         String inputPassword = String.valueOf(password.getText());
 
-        // Akun admin dan kasir hardcoded
-        String adminUsername = "admin";
-        String adminPassword = "123";
-        String kasirUsername = "kasir";
-        String kasirPassword = "123";
-
-        if (inputUsername.equals(adminUsername) && inputPassword.equals(adminPassword)) {
-            JOptionPane.showMessageDialog(this, "Login Admin Berhasil!");
-            new ApotekAdmin().setVisible(true);  // Buka frame ApotekAdmin
-            this.dispose();
-        } else if (inputUsername.equals(kasirUsername) && inputPassword.equals(kasirPassword)) {
-            JOptionPane.showMessageDialog(this, "Login Kasir Berhasil!");
-            new TokoObat().setVisible(true);  // Buka frame TokoObat
+        // Memeriksa username dan password di database
+        if (authenticateUser(inputUsername, inputPassword)) {
+            if (inputUsername.equals("admin")) {
+                JOptionPane.showMessageDialog(this, "Login Admin Berhasil!");
+                new ApotekAdmin().setVisible(true);  // Buka frame ApotekAdmin
+            } else if (inputUsername.equals("kasir")) {
+                JOptionPane.showMessageDialog(this, "Login Kasir Berhasil!");
+                new TokoObat().setVisible(true);  // Buka frame TokoObat
+            }
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Username atau Password Salah!", "Error", JOptionPane.ERROR_MESSAGE);
             password.setText("");
         }
     }//GEN-LAST:event_LoginButtonActionPerformed
-
+    private boolean authenticateUser(String username, String password) {
+        boolean isAuthenticated = false;
+        Connection conn = DatabaseConnector.getConnection();
+        if (conn != null) {
+            try {
+                // Query untuk mencari username dan password di database
+                String query = "SELECT * FROM user WHERE username = ? AND password = ?";
+                PreparedStatement stmt = conn.prepareStatement(query);
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+                
+                ResultSet rs = stmt.executeQuery();
+                
+                if (rs.next()) {
+                    // Username dan password cocok
+                    isAuthenticated = true;
+                }
+                
+                rs.close();
+                stmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return isAuthenticated;
+    }
     /**
      * @param args the command line arguments
      */

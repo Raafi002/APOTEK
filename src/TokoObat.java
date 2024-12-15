@@ -47,24 +47,28 @@ public class TokoObat extends javax.swing.JFrame {
 
     // Load List Obat sesuai jenis_obat
     private void loadListObat(String jenis) {
-        try {
-            String query = "SELECT nama_obat, harga_obat FROM obat WHERE jenis_obat = ?";
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, jenis);
-            ResultSet rs = ps.executeQuery();
-            DefaultListModel<String> listModel = new DefaultListModel<>();
-            hargaObatMap.clear(); // Bersihkan HashMap
+    try {
+        // Ubah query untuk mengambil kode_obat juga
+        String query = "SELECT kode_obat, nama_obat, harga_obat FROM obat WHERE jenis_obat = ?";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setString(1, jenis);
+        ResultSet rs = ps.executeQuery();
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        hargaObatMap.clear(); // Bersihkan HashMap
 
-            while (rs.next()) {
-                String namaObat = rs.getString("nama_obat");
-                int harga = rs.getInt("harga_obat");
-                listModel.addElement(namaObat);
-                hargaObatMap.put(namaObat, harga);
-            }
-            listObat.setModel(listModel);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal Load List Obat: " + e.getMessage());
+        while (rs.next()) {
+            String kodeObat = rs.getString("kode_obat");  // Ambil kode_obat
+            String namaObat = rs.getString("nama_obat");
+            int harga = rs.getInt("harga_obat");
+
+            // Tambahkan kode_obat dan nama_obat ke dalam list model
+            listModel.addElement(kodeObat + " - " + namaObat); // Tampilkan kode dan nama obat
+            hargaObatMap.put(kodeObat + " - " + namaObat, harga); // Simpan harga berdasarkan kode dan nama obat
         }
+        listObat.setModel(listModel);
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Gagal Load List Obat: " + e.getMessage());
+    }
     }
 
     /**
@@ -379,6 +383,7 @@ public class TokoObat extends javax.swing.JFrame {
 
     private void tambahKeTerpilihActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahKeTerpilihActionPerformed
         // TODO add your handling code here:
+        // Ambil obat yang dipilih
         String selectedObat = listObat.getSelectedValue();
         int qty;
         try {
@@ -387,13 +392,15 @@ public class TokoObat extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Pilih obat dan masukkan kuantitas yang valid!");
                 return;
             }
+            // Ambil harga dari map berdasarkan nama dan kode obat
             int hargaSatuan = hargaObatMap.get(selectedObat);
             int subtotal = hargaSatuan * qty;
             totalHargaSemua += subtotal;
 
+            // Tambahkan kode_obat, nama_obat, jumlah, harga, dan subtotal ke dalam modelListObatDipilih
             modelListObatDipilih.addElement(selectedObat + " - " + qty + " x " + hargaSatuan + " = " + subtotal);
             totalHarga.setText("Total Harga Rp. " + totalHargaSemua);
-            kuantitas.setText("");
+            kuantitas.setText("");  // Reset kuantitas setelah ditambah
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Kuantitas harus berupa angka!");
         }
@@ -416,54 +423,92 @@ public class TokoObat extends javax.swing.JFrame {
 
     private void cetakStrukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cetakStrukActionPerformed
         // TODO add your handling code here:
-    // Membuat header struk
-    StringBuilder struk = new StringBuilder();
-    struk.append("========== STRUK PEMBELIAN ==========\n");
-    
-    // Menambahkan informasi obat yang dipilih
-    for (int i = 0; i < modelListObatDipilih.size(); i++) {
-        struk.append(modelListObatDipilih.getElementAt(i)).append("\n");
-    }
+        
+        // Membuat header struk
+        StringBuilder struk = new StringBuilder();
+        struk.append("========== STRUK PEMBELIAN ==========\n");
 
-    // Menambahkan total harga
-    struk.append("-------------------------------------\n");
-    struk.append("Total Harga      : Rp. " + totalHargaSemua + "\n");
-    
-    // Mengambil tanggal dari JDateChooser
-    java.util.Date selectedDate = tanggal.getDate(); // Mengambil tanggal yang dipilih
-    if (selectedDate != null) {
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd-MM-yyyy");
-        String formattedDate = sdf.format(selectedDate); // Format tanggal menjadi string
-        struk.append("Tanggal          : " + formattedDate + "\n");
-    } else {
-        struk.append("Tanggal          : Tidak Diketahui\n"); // Jika tidak ada tanggal yang dipilih
-    }
-
-    // Menambahkan jumlah uang yang dibayar
-    try {
-        int uangDibayar = Integer.parseInt(jumlah.getText()); // Mengambil jumlah uang dari JTextField
-        struk.append("Jumlah Uang      : Rp. " + uangDibayar + "\n"); // Menambahkan jumlah uang pada struk
-
-        // Menghitung kembalian
-        int kembalianUang = uangDibayar - totalHargaSemua;
-        if (kembalianUang < 0) {
-            JOptionPane.showMessageDialog(this, "Uang tidak cukup!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        } else {
-            struk.append("Kembalian        : Rp. " + kembalianUang + "\n"); // Menambahkan kembalian
+        // Menambahkan informasi obat yang dipilih
+        for (int i = 0; i < modelListObatDipilih.size(); i++) {
+            struk.append(modelListObatDipilih.getElementAt(i)).append("\n");
         }
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Masukkan jumlah uang yang valid!", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
 
-    // Menambahkan pesan terima kasih
-    struk.append("====================================\n");
-    struk.append("Terima kasih atas pembelian Anda!\n");
-    
-    // Menampilkan struk dalam bentuk JOptionPane
-    JOptionPane.showMessageDialog(this, struk.toString(), "Struk Pembelian", JOptionPane.INFORMATION_MESSAGE);
+        // Menambahkan total harga
+        struk.append("-------------------------------------\n");
+        struk.append("Total Harga      : Rp. " + totalHargaSemua + "\n");
+
+        // Mengambil tanggal dari JDateChooser
+        java.util.Date selectedDate = tanggal.getDate(); // Mengambil tanggal yang dipilih
+        String formattedDate = "";
+        if (selectedDate != null) {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+            formattedDate = sdf.format(selectedDate); // Format tanggal menjadi string
+            struk.append("Tanggal          : " + formattedDate + "\n");
+        } else {
+            struk.append("Tanggal          : Tidak Diketahui\n"); // Jika tidak ada tanggal yang dipilih
+        }
+
+        // Menambahkan jumlah uang yang dibayar
+        try {
+            int uangDibayar = Integer.parseInt(jumlah.getText()); // Mengambil jumlah uang dari JTextField
+            struk.append("Jumlah Uang      : Rp. " + uangDibayar + "\n"); // Menambahkan jumlah uang pada struk
+
+            // Menghitung kembalian
+            int kembalianUang = uangDibayar - totalHargaSemua;
+            if (kembalianUang < 0) {
+                JOptionPane.showMessageDialog(this, "Uang tidak cukup!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
+                struk.append("Kembalian        : Rp. " + kembalianUang + "\n"); // Menambahkan kembalian
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Masukkan jumlah uang yang valid!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Menambahkan pesan terima kasih
+        struk.append("====================================\n");
+        struk.append("Terima kasih atas pembelian Anda!\n");
+
+        // Menampilkan struk dalam bentuk JOptionPane
+        JOptionPane.showMessageDialog(this, struk.toString(), "Struk Pembelian", JOptionPane.INFORMATION_MESSAGE);
+
+        // Menyimpan transaksi ke database
+        saveTransaksiToDatabase(formattedDate, totalHargaSemua);
     }//GEN-LAST:event_cetakStrukActionPerformed
+private void saveTransaksiToDatabase(String tanggal, int totalHarga) {
+    try (Connection conn = DatabaseConnector.getConnection()) {
+        String query = "INSERT INTO transaksi (kode_obat, nama_obat, total_harga, tanggal_transaksi) VALUES (?, ?, ?, ?)";
+        
+        for (int i = 0; i < modelListObatDipilih.size(); i++) {
+            String obatDetail = modelListObatDipilih.getElementAt(i);
+            String[] obatParts = obatDetail.split(" - "); // Formatnya "kode_obat - nama_obat"
+
+            String kodeObat = obatParts[0]; // kode_obat di indeks pertama
+            String namaObat = obatParts[1]; // nama_obat di indeks kedua
+
+            // Menyimpan transaksi ke database
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, kodeObat);  // Set kode_obat sebagai foreign key
+                stmt.setString(2, namaObat);  // Set nama_obat
+                stmt.setInt(3, totalHarga);   // Set total_harga
+                stmt.setString(4, tanggal);   // Set tanggal transaksi
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        JOptionPane.showMessageDialog(this, "Transaksi berhasil disimpan!", "Transaksi", JOptionPane.INFORMATION_MESSAGE);
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat menyimpan transaksi.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+
+
 
     /**
      * @param args the command line arguments
